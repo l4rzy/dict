@@ -5,6 +5,12 @@ class TrieNode(object):
         self.children : Dict[str, TrieNode] = {}
         self.value = value
 
+    @property
+    def is_leaf(self):
+        if self.value > 0:
+            return True
+        return False
+
     def insert(self, key: str, value: int):
         current = self
         key = key.lower()
@@ -47,9 +53,9 @@ class TrieNode(object):
         node = self.traverse(key)
         if node is None:
             return []
-        if node.value != 0:
+        if node.is_leaf:
             return [(key, node.value)]
-        if node.value == 0:
+        if not node.is_leaf:
             return TrieNode.traverse_leaves(node, key, [])
 
 
@@ -72,6 +78,9 @@ class DictionaryData(object):
     def write_trie(self, name):
         with open(name, 'wb') as f:
             pickle.dump(self.trie, f)
+
+    def write_meanings(self, word):
+        pass
 
     def do_indexing(self, datafile, idxfile):
         entries = 0
@@ -105,14 +114,6 @@ class DictionaryData(object):
         return self.data.readline().strip()
 
 if __name__ == "__main__":
-    # n = TrieNode()
-    # n.insert('hello', 3)
-    # n.insert('hi', 4)
-    # n.insert('heck', 5)
-
-    # print(n.search('h'))
-    # print(n.search('he'))
-
     d = DictionaryData('dict.txt', 'dict.idx')
     while True:
         q = input('> ')
