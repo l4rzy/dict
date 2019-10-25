@@ -1,4 +1,5 @@
-import pickle, os
+import pickle
+import os
 
 class TrieNode(object):
     def __init__(self, value = -1):
@@ -125,9 +126,7 @@ class DictionaryData(object):
 
     def search(self, keyword: str):
         result = self.trie.search(keyword)
-
-        for r in result:
-            print(f'{r[0]}: {self.read_meaning(r[1])}')
+        return result
 
     def read_meaning(self, offset):
         self.data.seek(offset)
@@ -148,4 +147,6 @@ if __name__ == "__main__":
         if q == 'END':
             exit()
         else:
-            d.search(q)
+            result = d.search(q)
+            for r in result:
+                print(f'{r[0]}: {d.read_meaning(r[1])}')

@@ -1,1 +1,1 @@
-GTK_THEME=Arc-solid python ui.py
+GTK_THEME=Adwaita python ui.py
