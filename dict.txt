@@ -73,7 +73,7 @@ Haploid:thể đơn bội
 Heterozygous:dị hợp tử
 Homologous structure:cấu trúc tương đồng
 Host cell:tế bào chủ
-Immunity sự miễn nhiễm
+Immunity:sự miễn nhiễm
 Infection:sự nhiễm trùng
 Inflammatory response:sự kháng cự viêm nhiễm
 Interneuron:nơ ron trung gian
