@@ -144,9 +144,6 @@ if __name__ == "__main__":
     d = DictionaryData('dict.idx', 'dict.data', 'dict.txt')
     while True:
         q = input('> ')
-        if q == 'END':
-            exit()
-        else:
-            result = d.search(q)
-            for r in result:
-                print(f'{r[0]}: {d.read_meaning(r[1])}')
+        result = d.search(q)
+        for r in result:
+            print(f'{r[0]}: {d.read_meaning(r[1])}')

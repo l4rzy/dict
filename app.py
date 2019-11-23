@@ -1,8 +1,8 @@
+import pickle
+import os, sys
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk, Gio
-import pickle
-import os
 
 class TrieNode(object):
     def __init__(self, value = -1):
@@ -149,12 +149,15 @@ class DictionaryUI(Gtk.Window):
         Gtk.Window.__init__(self, title="Dictionary")
         self.dict = DictionaryData('dict.idx', 'dict.data', 'dict.txt')
         self.raw_result = []
+        self.history = []
+
         self.set_border_width(4)
-        self.set_default_size(800, 500)
+        self.set_default_size(600, 300)
 
         self.init_headerbar()
         self.init_body()
         self.search_events()
+        self.init_events()
 
     def init_headerbar(self):
         hb = Gtk.HeaderBar()
@@ -202,26 +205,44 @@ class DictionaryUI(Gtk.Window):
 
         self.add(vbox)
 
+    def init_events(self):
+        self.button_left.connect('clicked', self.on_click_left)
+        self.button_right.connect('clicked', self.on_click_right)
+
+    def on_click_left(self, x):
+        print("left")
+
+    def on_click_right(self, x):
+        print('right')
+
     def on_click_popover(self, button):
+        print(">")
         self.popover.set_relative_to(button)
         self.popover.show_all()
         self.popover.popup()
 
     def search_events(self):
-        self.search_bar.connect('key_press_event', self.update_completion)
+        self.search_bar.connect('key_press_event', self.on_key)
+        self.search_bar.connect('backspace', self.on_backspace)
         self.search_bar.connect('activate', self.render)
 
-    def update_completion(self, search_bar, x):
+    def on_key(self, search_bar, x):
         self.store.clear()
         text = self.search_bar.get_text()
         if len(text) > 0:
             self.raw_result = self.dict.search(text)
-            print(self.raw_result)
+            #print(self.raw_result)
             for r in self.raw_result:
                 self.store.append([r[0]])
 
-    def append_history(self, entry):
-        pass
+    def on_backspace(self, entry):
+        self.store.clear()
+        text = self.search_bar.get_text()[:-1]
+        if len(text) > 1:
+            self.raw_result = self.dict.search(text)
+            #print(self.raw_result)
+            for r in self.raw_result:
+                self.store.append([r[0]])
 
     def render(self, word):
         if len(self.raw_result) == 1:
@@ -229,8 +250,25 @@ class DictionaryUI(Gtk.Window):
         definition = self.dict.read_meaning(entry[1])
         self.word.set_text(entry[0])
         self.definition.set_text(definition)
+        self.history.append(entry[0])
 
-win = DictionaryUI()
-win.connect("destroy", Gtk.main_quit)
-win.show_all()
-Gtk.main()
+
+if __name__ == '__main__':
+    if len(sys.argv) != 2:
+        exit()
+    else:
+        if sys.argv[1] == 'ui':
+
+
+            win = DictionaryUI()
+            win.connect("destroy", Gtk.main_quit)
+            win.show_all()
+            Gtk.main()
+        elif sys.argv[1] == 'cli':
+            d = DictionaryData('dict.idx', 'dict.data', 'dict.txt')
+            while True:
+                q = input('> ')
+                result = d.search(q)
+                for r in result:
+                    print(f'{r[0]}: {d.read_meaning(r[1])}')
+
