@@ -258,8 +258,6 @@ if __name__ == '__main__':
         exit()
     else:
         if sys.argv[1] == 'ui':
-
-
             win = DictionaryUI()
             win.connect("destroy", Gtk.main_quit)
             win.show_all()
